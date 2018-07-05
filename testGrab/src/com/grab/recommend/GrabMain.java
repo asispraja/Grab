@@ -53,6 +53,8 @@ public class GrabMain {
 		user.setBackground(null);
 		user.setFocusable(true);
 		user.setVisible(true);
+		user.setOpaque(false);
+		
 		
 		frame.getContentPane().add(user);
 		
@@ -62,12 +64,17 @@ public class GrabMain {
 		password.setBackground(null);
 		password.setFocusable(true);
 		password.setVisible(true);
+		password.setOpaque(false);
+		
 		
 		frame.getContentPane().add(password);
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setBounds(635, 548, 100, 50);
-		btnLogin.setBackground(null);
+		
+		btnLogin.setOpaque(false);
+		btnLogin.setContentAreaFilled(false);
+		btnLogin.setBorderPainted(false);
 		frame.getContentPane().add(btnLogin);
 		JLabel lblNewLabel = new JLabel(new ImageIcon("res/homepage.png"));
 		lblNewLabel.setBounds(0, 0, 1360, 768);

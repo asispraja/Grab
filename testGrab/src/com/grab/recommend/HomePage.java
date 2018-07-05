@@ -1,6 +1,8 @@
 package com.grab.recommend;
 
 import java.awt.EventQueue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -21,7 +23,9 @@ public class HomePage {
 			public void run() {
 				try {
 					HomePage window = new HomePage();
+					
 					window.frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -47,10 +51,29 @@ public class HomePage {
 		
 		JTextField search = new JTextField("Enter A Movie Name");
 		search.setBounds(113, 390, 300, 30);
+		search.setOpaque(false);
 		frame.getContentPane().add(search);
 		
 		JLabel btnsearch = new JLabel(new ImageIcon("res/liked.png"));
 		btnsearch.setBounds(450, 390, 30, 30);
+		 btnsearch.addMouseListener(new MouseAdapter() {
+              @Override
+              public void mouseClicked(MouseEvent e) {
+                frame.dispose();
+                try {
+                	String srch=null;
+                	srch=search.getText().toString();
+					MovieRecommendAi ai =new MovieRecommendAi();
+					MovieRecommendAi.setName(srch); 
+					MovieRecommendAi.main(null);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                  
+              }
+
+          });
 		frame.getContentPane().add(btnsearch);
 		
 		JLabel home = new JLabel(new ImageIcon("res/sidehome.png"));

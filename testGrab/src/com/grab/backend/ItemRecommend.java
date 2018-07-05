@@ -1,45 +1,56 @@
 package com.grab.backend;
 
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.TanimotoCoefficientSimilarity;
+//import org.apache.mahout.cf.taste.impl.similarity.TanimotoCoefficientSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 
 public class ItemRecommend {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		 BufferedWriter bw = new BufferedWriter(new FileWriter("data/similarity_rankings.csv"));
 		try {
-			BasicConfigurator.configure();
-			DataModel dm = new FileDataModel(new File("data/movies.csv"));
+			DataModel dm = new FileDataModel(new File("data/movie_similarity.csv"));
 			
 			ItemSimilarity sim = new LogLikelihoodSimilarity(dm);
 			//TanimotoCoefficientSimilarity sim = new TanimotoCoefficientSimilarity(dm);
 			
 			GenericItemBasedRecommender recommender = new GenericItemBasedRecommender(dm, sim);
 			
-			int x=1;
+			
 			for(LongPrimitiveIterator items = dm.getItemIDs(); items.hasNext();) {
 				long itemId = items.nextLong();
-				List<RecommendedItem>recommendations = recommender.mostSimilarItems(itemId,2);
+				String myitem,myrecom,myval;
+				List<RecommendedItem>recommendations = recommender.mostSimilarItems(itemId, 10);
 				
 				for(RecommendedItem recommendation : recommendations) {
-					System.out.println(itemId + "," + recommendation.getItemID() + "," + recommendation.getValue());
+					myitem=itemId+"";
+					myrecom=recommendation.getItemID()+"";
+					myval=recommendation.getValue()+"";
+						
+					bw.append(myitem+","+myrecom+","+myval);
+					bw.append("\n");
+					bw.flush();
+				System.out.println(itemId + "," + recommendation.getItemID() + "," + recommendation.getValue());
 				}
-				x++;
-				if(x>10) System.exit(1);
+				
 			}
 						
 			
-			
+			bw.close();
 		} catch (IOException e) {
 			System.out.println("There was an error.");
 			e.printStackTrace();
