@@ -67,18 +67,18 @@ int i=0;
 
 			            // BufferedImage has a Graphics2D
 			            Graphics2D g2d = (Graphics2D) thumb.getGraphics(); 
-			        /*    g2d.drawImage(img, 0, 0, 
+			            g2d.drawImage(img, 0, 0, 
 			                         127,
 			                          183, 
 			                          0, 0, 
 			                          img.getWidth() ,
 			                          img.getHeight(), 
 			                          null);
-			           */
+			           
 			            g2d.dispose();
 			            String newname=getthumbname(file);
 			            
-			            //ImageIO.write(thumb, "JPG", createOutputFile(new File("data/ima/mythumb"+newname)));
+			            ImageIO.write(thumb, "JPG", createOutputFile(new File("data/ima/mythumb"+newname)));
 			            bw.append(i+","+newname);
 			            bw.append("\n");
 			            bw.flush();

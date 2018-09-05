@@ -61,20 +61,21 @@ public class FilterMovieList {
 		e.printStackTrace();
 		System.out.println("Error");
 		}*/
+		
 		BufferedWriter bw = new BufferedWriter(new FileWriter("data/mylists.csv"));
 		BufferedReader br = new BufferedReader(new FileReader("data/mylist.csv"));
 		int myline=0;
 		String line=null;
 		String[] st=null;
 		String[] number=new String[4677];
-
+		String[] actor=null;
 		int[] mynumber=new int[4677];
 		 while((line = br.readLine()) != null) {
 			 	myline++;
 			 	st=line.split(",");
 			 	number[myline]=st[1].substring(17);
 			 	number[myline]=number[myline].replace(".jpg", "");
-			 	
+			 	actor[myline]=line;
 			 	//System.out.println("HI"+number[myline]);
 		 }
 		 int temp=0;

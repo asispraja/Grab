@@ -1,17 +1,22 @@
 package com.grab.frontend;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class SelectionPage extends JFrame {
@@ -62,49 +67,100 @@ public class SelectionPage extends JFrame {
 		txtSearch.setColumns(10);
 		txtSearch.setBounds(1283, 36, 51, 27);
 		contentPane.add(txtSearch);
-		int x=628;
-		int y=263;
-		JLabel[] lblAction= new JLabel[9];
-		JLabel[] thumb = new JLabel[9];
-		for(int i=0;i<9;i++)
-		{
-			
 		
-		lblAction[i]= new JLabel(genre[i]);
-		lblAction[i].setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAction[i].setForeground(Color.BLACK);
-		lblAction[i].setBounds(x, y, 100, 47);
-		contentPane.add(lblAction[i]);
-		thumb[i] = new JLabel(new ImageIcon("res/image/kingsman-the-golden-circle-119567.jpg"));
-		
-		thumb[i].setBounds(x, y-146, 153, 149);
-		contentPane.add(thumb[i]);
-		
-		x=x+200;
-		if(i%3==2)
-		{
-			y=y+200;
-			x=628;
-		}
-		}
-		/*JLabel lblComedy = new JLabel("COMEDY");
-		lblComedy.setForeground(Color.BLACK);
-		lblComedy.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblComedy.setBounds(815, 263, 70, 47);
-		contentPane.add(lblComedy);*/
-		
-		/*JLabel label_5 = new JLabel("");
-		label_5.setIcon(new ImageIcon("res/image/kingsman-the-golden-circle-119567.jpg"));
-		label_5.setBounds(597, 117, 153, 149);
-		contentPane.add(label_5);*/
+	
 		
 		JLabel lblGenre = new JLabel("GENRE");
+		lblGenre.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("GENRE");
+				int x=628;
+				int y=263;
+				JLabel[] lblAction= new JLabel[9];
+				JLabel[] thumb = new JLabel[9];
+				for(int i=0;i<9;i++)
+				{
+					
+				
+				lblAction[i]= new JLabel(genre[i]);
+				lblAction[i].setFont(new Font("Tahoma", Font.PLAIN, 16));
+				lblAction[i].setForeground(Color.BLACK);
+				lblAction[i].setBounds(x, y, 100, 47);
+				contentPane.add(lblAction[i]);
+				thumb[i] = new JLabel(new ImageIcon("data/ima/mythumb"+(i+1)+".jpg"));
+				
+				thumb[i].setBounds(x, y-146, 127, 183);
+				contentPane.add(thumb[i]);
+				
+				x=x+200;
+				if(i%3==2)
+				{
+					y=y+200;
+					x=628;
+				}
+				}
+			}
+		});
 		lblGenre.setFont(new Font("Arial Black", Font.PLAIN, 52));
 		lblGenre.setForeground(Color.WHITE);
 		lblGenre.setBounds(68, 188, 409, 47);
 		contentPane.add(lblGenre);
 		
 		JLabel lblActors = new JLabel("ACTORS");
+		lblActors.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.out.println("ACTORS");
+				BufferedReader br;
+				try {
+					br = new BufferedReader(new FileReader("data/mylist.csv"));
+				
+				int myline=0;
+				String line=null;
+				String[] actor=new String[100];
+				 while((line = br.readLine()) != null) {
+					 	myline++;
+					 	if(myline==0)
+					 		continue;
+					 	actor[myline]=line;
+					 	if(myline>50)
+					 		break;
+					 
+				 }
+				 br.close();
+				int x=628;
+				int y=263;
+				JLabel[] lblAction= new JLabel[9];
+				
+				for(int i=0;i<9;i++)
+				{
+					
+				
+				lblAction[i]= new JLabel(actor[i]);
+				lblAction[i].setFont(new Font("Tahoma", Font.PLAIN, 16));
+				lblAction[i].setForeground(Color.BLACK);
+				lblAction[i].setBounds(x, y, 100, 47);
+				contentPane.add(lblAction[i]);
+				
+				
+				
+				x=x+200;
+				if(i%3==2)
+				{
+					y=y+200;
+					x=628;
+				}
+				}
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		lblActors.setForeground(Color.WHITE);
 		lblActors.setFont(new Font("Arial Black", Font.PLAIN, 52));
 		lblActors.setBounds(68, 301, 409, 47);

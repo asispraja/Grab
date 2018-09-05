@@ -6,7 +6,14 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,12 +23,19 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.grab.backend.ShowRecommendation;
+// TODO write  an arraylist to get the movie id and movie name 
 public class RecommendationPage extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField txtSearch;
-
+	String ss=null;
+	int j=0;
+	List<Integer> result = null;
+	//String[] s= {"1","10","1011","1016","1022","1028","1029","1030","1031","1032","1033","1035","1036","104"};
+	List<String> recommendeds= new ArrayList<String>();
+	Map<Integer,String > movie = new LinkedHashMap<Integer,String>();
 	/**
 	 * Launch the application.
 	 */
@@ -29,6 +43,7 @@ public class RecommendationPage extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
 					RecommendationPage frame = new RecommendationPage();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -41,9 +56,58 @@ public class RecommendationPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	public void getMovieName()
+	{
+		BufferedReader m=null;
+		try {
+			 m = new BufferedReader(new FileReader("data/test/finalmoviedata.csv"));
+			String line =null;
+			String st[] =null;
+			int myyline=0;
+			while((line = m.readLine()) != null) {
+			 	st=line.split(",");
+			 	myyline++;
+			 	if(myyline==1)
+			 		break;
+			 	movie.put(Integer.parseInt(st[0]), st[1]);
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				m.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	public Integer getid(String name)
+	{
+		for(Integer key: movie.keySet())
+		{
+			if(movie.get(key).equals(name))
+			{
+				return key;
+			}
+		}
+		return null;
+	}
+	
 	public RecommendationPage() {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1366, 768);
+		System.out.println("start");
+		//getMovieName();
+		System.out.println("ready");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -55,15 +119,11 @@ public class RecommendationPage extends JFrame {
 		lblRecommendedForYou.setFont(new Font("Tahoma", Font.BOLD, 11));
 		contentPane.add(lblRecommendedForYou);
 		
-		JLabel label_6 = new JLabel("");
-		label_6.setIcon(new ImageIcon("res/image/thumb.png"));
-		label_6.setBounds(394, 109, 127, 183);
-		label_6.setVisible(false);
-		contentPane.add(label_6);
-		
-		
-		
-		
+		JLabel selectedM = new JLabel("HIIIIIII");
+		selectedM.setIcon(new ImageIcon("data/kkimage/"+"8MM"+".jpg"));
+		selectedM.setBounds(394, 109, 127, 183);
+		selectedM.setVisible(false);
+		contentPane.add(selectedM);
 		
 		JLabel lblTopTrending = new JLabel("Top Trending");
 		lblTopTrending.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -71,27 +131,33 @@ public class RecommendationPage extends JFrame {
 		contentPane.add(lblTopTrending);
 		int x=394;
 		int y=338;
-		for(int i=1;i<12;i++)
-		{
 		JLabel[] suggested = new JLabel[12];
-		String ss="data/ima/mythumb"+i+".jpg";
+		int count=0;
+		for(Integer j:movie.keySet()) 
+		{
+			count++;
+			if(count>11)
+				break;
+		 ss="data/kkimage/"+"8MM"+".jpg";
+		 System.out.println(ss);
 		Image ima=new ImageIcon(ss).getImage().getScaledInstance(127, 183, Image.SCALE_DEFAULT);
+		suggested[j] = new JLabel("HIIIII");
+		//suggested[j] = new JLabel(new ImageIcon(ima));
+			
+		suggested[j] = new JLabel(ss);	
+		suggested[j].setBounds(x, y, 127, 183);
 		
-		suggested[i] = new JLabel(new ImageIcon(ima));
-				
-		suggested[i].setBounds(x, y, 127, 183);
-		
-		
-		suggested[i].addMouseListener(new MouseAdapter() {
+		suggested[j].addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				label_6.setIcon(new ImageIcon(ima));
-				label_6.setVisible(true);
+			//	getRecommendations(suggested[j].getText());
+				//selectedM.setIcon(new ImageIcon(ima));
+				selectedM.setVisible(true);
 			}
 		});
-		contentPane.add(suggested[i]);
+		contentPane.add(suggested[j]);
 		x+=160;
-		if(i%6==5)
+		if(j%6==5)
 		{
 			y=y+200;
 			x=394;
@@ -200,6 +266,51 @@ public class RecommendationPage extends JFrame {
 		label.setIcon(new ImageIcon("res/image/homepage123.png"));
 		contentPane.add(label);
 	}
-	
+	public List<String> getRecommendations(String selected)
+	{
+		List<String> recommended= new ArrayList<String>();
+		String line;
+		String st[] = null;
+		System.out.println(selected);
+		/*try {
+			BufferedReader bf = new BufferedReader (new FileReader("data/test/cosine.csv"));
+			
+			
+			
+			while ((line = bf.readLine()) != null) {
+			    st=line.split(",");
+			  
+			    if(st[0]==selected)
+			    {
+			    	for(int i=0;i<st.length;i++)
+			    	{
+			    		
+						recommended.add(st[i+1]);
+						
+			    	}
+			    	break;
+			    	
+			    }
+			     
+			}
+		for(String s : recommended)
+		{
+			System.out.println(s);
+		}
+		
+		
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		return null;
+		
+	}
 	
 }
